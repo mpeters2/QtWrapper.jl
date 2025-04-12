@@ -63,3 +63,20 @@ void lineedit_disconnect_cursor_position_changed_all(void * pwidget) {
         qWarning("failed to disconnect cursor position changed signal");
     }
 }
+
+void lineedit_set_geometry(void * pwidget, QRect rect) {
+    QLineEdit * lineedit = static_cast<QLineEdit*>(pwidget);
+    lineedit -> setGeometry(rect);
+}
+
+void lineedit_set_geometry2(void * pwidget, int x, int y, int width, int height) {
+    QLineEdit * lineedit = static_cast<QLineEdit*>(pwidget);
+    lineedit -> setGeometry(x, y, width, height);
+}
+
+
+void lineedit_set_text(void * pwidget, const char * text) {
+    QString qstring(text);
+    QLineEdit * lineedit = static_cast<QLineEdit*>(pwidget);
+    lineedit -> setText(qstring);
+}

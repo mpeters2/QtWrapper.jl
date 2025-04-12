@@ -14,10 +14,22 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QTableView>
+#include <QRect>
+#include <QTextEdit>
 
+#include <QDialog>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QFlags>
+
+#include <QStyle> 
+#include <QStyleFactory> 
+
+  
 #include <unordered_map>
 #include <functional>
 
 #include <stdlib.h>
 #include <string.h>
 #endif
+ 

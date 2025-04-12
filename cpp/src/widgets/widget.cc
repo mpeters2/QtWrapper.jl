@@ -27,3 +27,14 @@ void set_geometry(void * widget, int x, int y, int width, int height) {
 void set_layout(void * widget, void * layout) {
     static_cast<QWidget *>(widget)->setLayout(static_cast<QLayout *>(layout));
 }
+
+void set_stylesheet(void * widget, const char * text) {
+    static_cast<QWidget *>(widget)->setStyleSheet(text);
+//	QAbstractButton * button = static_cast<QAbstractButton*>(pwidget);
+//    button -> setStyleSheet(QString(text));
+}
+/*
+void set_title(void * widget, const char * title) {
+    static_cast<QWidget *>(widget)->setWindowTitle(title);
+}
+*/

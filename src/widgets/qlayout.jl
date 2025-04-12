@@ -54,3 +54,32 @@ end
     f = dlsym(libqt_wrapper[], "layout_add_widget")
     ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}), ptr(layout), ptr(widget))
 end
+# MSP stuff below ---------------------------------------
+@pub mutable struct QGridLayout <: QLayout
+    pointer::Ptr{Nothing}
+
+    function QGridLayout()
+        f = dlsym(libqt_wrapper[], "grid_layout")
+        pointer = ccall(f, Ptr{Nothing}, ())
+        result = new(pointer)
+
+        finalizer(freeQObject, result)
+
+        return result
+    end
+end
+
+@pub function addLayout!(layout::QGridLayout, sublayout::QLayout)
+    if layout isa QHBoQGridLayoutxLayout
+        f = dlsym(libqt_wrapper[], "grid_add_layout")
+        ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}), ptr(layout), ptr(sublayout))
+    else
+        error("Unknown layout type")
+    end
+end
+
+@pub function addWidget!(layout::QLayout, widget::QtWidget, row::Int64, column::Int64, rowSpan::Int64, columnSpan::Int64)
+    f = dlsym(libqt_wrapper[], "layout_add_grid_widget")
+    ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}, Cint, Cint, Cint, Cint), ptr(layout), ptr(widget), row, column, rowSpan, columnSpan)
+end
+

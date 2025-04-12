@@ -1,4 +1,4 @@
-mutable struct QKeySequence
+@pub mutable struct QKeySequence
     pointer::Ptr{Nothing}
 
     function QKeySequence(pointer::Ptr{Nothing})

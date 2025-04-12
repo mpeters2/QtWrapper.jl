@@ -26,6 +26,8 @@ end
     end
 end
 
+
+
 @pub mutable struct QCheckbBox <: QAbstractButton
     pointer::Ptr{Nothing}
     
@@ -43,6 +45,31 @@ end
 @pub function clicked!(button::QAbstractButton, callback::Function)
     f = dlsym(libqt_wrapper[], "button_connect_clicked")
     ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}), ptr(button), @cfunction($callback, Cvoid, (Bool,)))
+end
+
+#=
+	ccall( function,
+			returnType,
+			(argtypes...),
+			argvalues...
+		)
+	
+	ccall( QtCfunction,
+			Cvoid,
+			(Ptr{Nothing}, Ptr{Nothing}),
+
+    ccall(f, 
+			Cvoid, 
+			(Ptr{Nothing}, Ptr{Nothing}), 
+			ptr(button), @cfunction($callback, Cvoid, (Bool,)))
+
+=#
+
+# experimentalversion to try to get around closure problem on Apple Silicon
+@pub function clicked2!(button::QAbstractButton, callback::Function)
+    f = dlsym(libqt_wrapper[], "button_connect_clicked")
+	callback_wrapper = @cfunction($callback, Cint, (Cdouble, Cstring, Any))
+    ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}), ptr(button), callback_wrapper)
 end
 
 @pub function resetClicked!(button::QAbstractButton)
@@ -90,7 +117,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, ), ptr(button))
 end
 
-@pub function autoExclusive(button::QAbstractButton)::Bool
+@pub function autoExclusive(button::QAbstractButton, value::Bool)	#::Bool
     f = dlsym(libqt_wrapper[], "button_auto_exclusive")
     return ccall(f, Bool, (Ptr{Nothing}, ), ptr(button))
 end
@@ -100,7 +127,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Bool), ptr(button), value)
 end
 
-@pub function autoRepeat(button::QAbstractButton)::Bool
+@pub function autoRepeat(button::QAbstractButton, value::Bool)	#)::Bool
     f = dlsym(libqt_wrapper[], "button_auto_repeat")
     return ccall(f, Bool, (Ptr{Nothing}, ), ptr(button))
 end
@@ -110,7 +137,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Bool), ptr(button), value)
 end
 
-@pub function autoRepeatDelay(button::QAbstractButton)::Int
+@pub function autoRepeatDelay(button::QAbstractButton, value::Int)	#)::Int
     f = dlsym(libqt_wrapper[], "button_auto_repeat_delay")
     return ccall(f, Cint, (Ptr{Nothing}, ), ptr(button))
 end
@@ -120,7 +147,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Cint), ptr(button), value)
 end
 
-@pub function autoRepeatInterval(button::QAbstractButton)::Int
+@pub function autoRepeatInterval(button::QAbstractButton, value::Int)	#)::Int
     f = dlsym(libqt_wrapper[], "button_auto_repeat_interval")
     return ccall(f, Cint, (Ptr{Nothing}, ), ptr(button))
 end
@@ -130,7 +157,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Cint), ptr(button), value)
 end
 
-@pub function checkable(button::QAbstractButton)::Bool
+@pub function checkable(button::QAbstractButton, value::Bool)	#)::Bool
     f = dlsym(libqt_wrapper[], "button_checkable")
     return ccall(f, Cint, (Ptr{Nothing}, ), ptr(button)) 
 end
@@ -140,7 +167,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Bool), ptr(button), value)
 end
 
-@pub function down(button::QAbstractButton)::Bool
+@pub function down(button::QAbstractButton, value::Bool)	#)::Bool
     f = dlsym(libqt_wrapper[], "button_down")
     return ccall(f, Cint, (Ptr{Nothing}, ), ptr(button)) 
 end
@@ -150,7 +177,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Bool), ptr(button), value)
 end
 
-@pub function icon(button::QAbstractButton)::QIcon
+@pub function icon(button::QAbstractButton, icon::QIcon)	#)::QIcon
     f = dlsym(libqt_wrapper[], "button_icon")
     pointer = ccall(f, Ptr{Nothing}, (Ptr{Nothing}, ), ptr(button))
     return QIcon(pointer)
@@ -161,7 +188,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}), ptr(button), ptr(icon))
 end
 
-@pub function iconSize(button::QAbstractButton)::QSize
+@pub function iconSize(button::QAbstractButton, size::QSize)
     f = dlsym(libqt_wrapper[], "button_icon_size")
     pointer = ccall(f, Ptr{Nothing}, (Ptr{Nothing}, ), ptr(button))
     return QSize(pointer)
@@ -172,7 +199,7 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Cint, Cint), ptr(button), width, height)
 end
 
-@pub function shortcut(button::QAbstractButton)::QKeySequence
+@pub function shortcut(button::QAbstractButton, shortcut::QKeySequence)
     f = dlsym(libqt_wrapper[], "button_shortcut")
     pointer = ccall(f, Ptr{Nothing}, (Ptr{Nothing}, ), ptr(button))
 
@@ -184,7 +211,12 @@ end
     ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}), ptr(button), ptr(shortcut))
 end
 
-@pub function text(button::QAbstractButton)::String
+@pub function shortcut!(button::QAbstractButton, text::String)
+    f = dlsym(libqt_wrapper[], "button_set_shortcut")
+    ccall(f, Cvoid, (Ptr{Nothing}, Cstring), ptr(button), text)
+end
+
+@pub function text(button::QAbstractButton, text::String)
     f = dlsym(libqt_wrapper[], "button_text")
     chars = ccall(f, Cstring, (Ptr{Nothing}, ), ptr(button))
     result = unsafe_string(chars)
@@ -199,7 +231,19 @@ end
     f = dlsym(libqt_wrapper[], "button_set_text")
     ccall(f, Cvoid, (Ptr{Nothing}, Cstring), ptr(button), text)
 end
-
+#------------------------------
+# qbutton setstylesheet prototype
+#=
+void button_set_stylesheet(void * pwidget, const char * text) {
+    QAbstractButton * button = static_cast<QAbstractButton*>(pwidget);
+    button -> setStyleSheet(QString(text));
+}
+=#
+@pub function setStyleSheet!(button::QAbstractButton, text::String)
+    f = dlsym(libqt_wrapper[], "button_set_stylesheet")
+    ccall(f, Cvoid, (Ptr{Nothing}, Cstring), ptr(button), text)
+end
+#------------------------------
 @pub function click(button::QAbstractButton)
     f = dlsym(libqt_wrapper[], "button_click")
     ccall(f, Cvoid, (Ptr{Nothing}, ), ptr(button))
@@ -218,4 +262,15 @@ end
 @pub function toggle(button::QAbstractButton)
     f = dlsym(libqt_wrapper[], "button_toggle")
     ccall(f, Cvoid, (Ptr{Nothing}, ), ptr(button))
+end
+
+@pub function setGeometry(button::QAbstractButton, theRect::QRect)
+    f = dlsym(libqt_wrapper[], "button_set_geometry")
+    ccall(f, Cvoid, (Ptr{Nothing}, QRect), ptr(button), theRect)
+end
+
+@pub function setGeometry(button::QAbstractButton, x::Int, y::Int, width::Int, height::Int)
+    f = dlsym(libqt_wrapper[], "button_set_geometry2")
+	#println("setGeometry through four params")
+	ccall(f, Cvoid, (Ptr{Nothing}, Cint, Cint, Cint, Cint), ptr(button), x, y, width, height)
 end

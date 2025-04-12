@@ -41,3 +41,20 @@ end
     f = dlsym(libqt_wrapper[], "set_layout")
     ccall(f, Cvoid, (Ptr{Nothing}, Ptr{Nothing}), ptr(widget), ptr(layout))
 end
+
+@pub function setGeometry(widget::QtWidget, theRect::QRect)
+    f = dlsym(libqt_wrapper[], "set_geometry")
+	#println("setGeometry through Qrect (widget)")
+    ccall(f, Cvoid, (Ptr{Nothing}, QRect), ptr(widget), theRect)
+end
+
+@pub function setGeometry(widget::QtWidget, x::Int, y::Int, width::Int, height::Int)
+    f = dlsym(libqt_wrapper[], "set_geometry")
+	#println("setGeometry through four params")
+	ccall(f, Cvoid, (Ptr{Nothing}, Cint, Cint, Cint, Cint), ptr(widget), x, y, width, height)
+end
+
+@pub function setStyleSheet(widget::T, title::String) where T <: QtWidget
+    f = dlsym(libqt_wrapper[], "set_stylesheet")
+    ccall(f, Cvoid, (Ptr{Nothing}, Cstring), ptr(widget), title)
+end

@@ -174,6 +174,14 @@ void button_set_text(void * pwidget, const char * text) {
     QAbstractButton * button = static_cast<QAbstractButton*>(pwidget);
     button -> setText(QString(text));
 }
+//------------------------------
+// qbutton setstylesheet prototype
+void button_set_stylesheet(void * pwidget, const char * text) {
+    QAbstractButton * button = static_cast<QAbstractButton*>(pwidget);
+    button -> setStyleSheet(QString(text));
+}
+
+//------------------------------
 
 void free_char_sequence(const char * str) {
     delete [] str;
@@ -198,3 +206,14 @@ void button_toggle(void * pwidget) {
     QAbstractButton * button = static_cast<QAbstractButton*>(pwidget);
     button -> toggle();
 }
+
+void button_set_geometry(void * pwidget, QRect rect) {
+    QAbstractButton * button = static_cast<QAbstractButton*>(pwidget);
+    button -> setGeometry(rect);
+}
+
+void button_set_geometry2(void * pwidget, int x, int y, int width, int height) {
+    QAbstractButton * button = static_cast<QAbstractButton*>(pwidget);
+    button -> setGeometry(x, y, width, height);
+}
+
